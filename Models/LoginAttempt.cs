@@ -1,6 +1,6 @@
 using System;
 
-namespace SmartBudgetTracker.Models
+namespace SmartBudgetMobile.Models
 {
     public class LoginAttempt
     {

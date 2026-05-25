@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SmartBudgetTracker.Models
+namespace SmartBudgetMobile.Models
 {
     public class AppData
     {
