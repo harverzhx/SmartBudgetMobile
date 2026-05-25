@@ -50,7 +50,7 @@ public partial class BillsPage : ContentPage
                 NameColor = isOverdue ? Colors.Red :
                     b.Status == BillStatus.Paid ? Color.FromArgb("#2ECC71") : Color.FromArgb("#2C3E50"),
                 DaysLeftDisplay = isOverdue ? $"Overdue by {-daysLeft} days" :
-                    b.Status == BillStatus.Paid ? $"Paid on {b.PaidAt:MMM dd}" : "",
+                    b.Status == BillStatus.Paid ? $"Paid on {b.PaidAt.Value:MMM dd}" : "",
                 Notes = b.Notes ?? "",
                 IsRecurring = b.IsRecurring,
                 Status = b.Status
@@ -90,7 +90,7 @@ public partial class BillsPage : ContentPage
         {
             BillName = txtBillName.Text.Trim(),
             Amount = amount,
-            DueDate = dateDueDate.Date,
+            DueDate = dateDueDate.Date.GetValueOrDefault(),
             Notes = txtNotes.Text?.Trim() ?? "",
             IsRecurring = switchRecurring.IsToggled,
             Username = Username
@@ -122,7 +122,7 @@ public partial class BillsPage : ContentPage
             Id = _selectedBillId.Value,
             BillName = txtBillName.Text.Trim(),
             Amount = amount,
-            DueDate = dateDueDate.Date,
+            DueDate = dateDueDate.Date.GetValueOrDefault(),
             Notes = txtNotes.Text?.Trim() ?? "",
             IsRecurring = switchRecurring.IsToggled,
             Username = Username

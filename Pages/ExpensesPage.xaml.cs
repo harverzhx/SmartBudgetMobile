@@ -122,7 +122,7 @@ public partial class ExpensesPage : ContentPage
             Quantity = decimal.TryParse(txtQuantity.Text, out decimal qty) ? qty : 0,
             PricePerUnit = decimal.TryParse(txtPricePerUnit.Text, out decimal ppu) ? ppu : 0,
             UnitOfMeasure = pickerUnit.SelectedItem as string ?? "",
-            Date = datePicker.Date,
+            Date = datePicker.Date.GetValueOrDefault(),
             Notes = txtNotes.Text?.Trim() ?? "",
             Username = Username
         };
@@ -163,7 +163,7 @@ public partial class ExpensesPage : ContentPage
             Quantity = decimal.TryParse(txtQuantity.Text, out decimal qty) ? qty : 0,
             PricePerUnit = decimal.TryParse(txtPricePerUnit.Text, out decimal ppu) ? ppu : 0,
             UnitOfMeasure = pickerUnit.SelectedItem as string ?? "",
-            Date = datePicker.Date,
+            Date = datePicker.Date.GetValueOrDefault(),
             Notes = txtNotes.Text?.Trim() ?? "",
             Username = Username
         };
