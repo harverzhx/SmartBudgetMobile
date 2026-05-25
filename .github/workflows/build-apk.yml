@@ -1,0 +1,35 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'SmartBudgetMobile/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Install MAUI workload
+        run: dotnet workload install maui-android
+
+      - name: Restore dependencies
+        run: dotnet restore SmartBudgetMobile/SmartBudgetMobile.csproj
+
+      - name: Build APK
+        run: dotnet publish SmartBudgetMobile/SmartBudgetMobile.csproj -f net10.0-android -c Release -o publish
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SmartBudget-APK
+          path: publish/*.apk
