@@ -15,24 +15,4 @@
         ContentTemplate="{DataTemplate pages:DashboardPage}"
         Route="dashboard" />
 
-    <ShellContent
-        Title="Expenses"
-        ContentTemplate="{DataTemplate pages:ExpensesPage}"
-        Route="expenses" />
-
-    <ShellContent
-        Title="Budget"
-        ContentTemplate="{DataTemplate pages:BudgetPage}"
-        Route="budget" />
-
-    <ShellContent
-        Title="Bills"
-        ContentTemplate="{DataTemplate pages:BillsPage}"
-        Route="bills" />
-
-    <ShellContent
-        Title="Savings"
-        ContentTemplate="{DataTemplate pages:SavingsPage}"
-        Route="savings" />
-
 </Shell>

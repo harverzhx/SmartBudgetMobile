@@ -49,22 +49,22 @@ public partial class DashboardPage : ContentPage
 
 	private async void OnExpensesClicked(object sender, EventArgs e)
 	{
-		await Shell.Current.GoToAsync("//expenses");
+		await Shell.Current.GoToAsync("expenses");
 	}
 
 	private async void OnBudgetClicked(object sender, EventArgs e)
 	{
-		await Shell.Current.GoToAsync("//budget");
+		await Shell.Current.GoToAsync("budget");
 	}
 
 	private async void OnBillsClicked(object sender, EventArgs e)
 	{
-		await Shell.Current.GoToAsync("//bills");
+		await Shell.Current.GoToAsync("bills");
 	}
 
 	private async void OnSavingsClicked(object sender, EventArgs e)
 	{
-		await Shell.Current.GoToAsync("//savings");
+		await Shell.Current.GoToAsync("savings");
 	}
 
 	private async void OnAllowanceClicked(object sender, EventArgs e)
