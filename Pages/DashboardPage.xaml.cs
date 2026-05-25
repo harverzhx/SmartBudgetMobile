@@ -95,7 +95,7 @@ public partial class DashboardPage : ContentPage
 	private async void OnSettingsClicked(object sender, EventArgs e)
 	{
 		string action = await DisplayActionSheet("Settings", "Cancel", null,
-			"Backup Data", "Restore from Backup", "Share Data", "Reset All Data", "Logout");
+			"Backup Data", "Restore from Backup", "Share Data", "Import from ZIP", "Reset All Data", "Logout");
 
 		switch (action)
 		{
@@ -148,6 +148,40 @@ public partial class DashboardPage : ContentPage
 						Title = "SmartBudget Backup",
 						File = new ShareFile(zipPath)
 					});
+				}
+				catch (Exception ex)
+				{
+					await DisplayAlert("Error", ex.Message, "OK");
+				}
+				break;
+
+			case "Import from ZIP":
+				try
+				{
+					var fileResult = await FilePicker.Default.PickAsync(new PickOptions
+					{
+						PickerTitle = "Select SmartBudget backup ZIP",
+						FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
+						{
+							{ DevicePlatform.Android, new[] { "application/zip" } }
+						})
+					});
+					if (fileResult == null) break;
+
+					var (success, message) = FileManager.ImportFromZip(fileResult.FullPath);
+					await DisplayAlert(success ? "Success" : "Error", message, "OK");
+
+					if (success)
+					{
+						_expenseManager.Reload();
+						_budgetManager.Reload();
+						bool relogin = await DisplayAlert("Restore Complete", "Re-login to apply changes?", "Yes", "No");
+						if (relogin)
+						{
+							_authManager.Logout();
+							await Shell.Current.GoToAsync("//login");
+						}
+					}
 				}
 				catch (Exception ex)
 				{

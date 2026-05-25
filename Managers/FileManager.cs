@@ -242,6 +242,37 @@ namespace SmartBudgetMobile.Managers
             return zipPath;
         }
 
+        public static (bool Success, string Message) ImportFromZip(string zipPath)
+        {
+            try
+            {
+                string extractDir = Path.Combine(FileSystem.CacheDirectory, "import_" + Guid.NewGuid().ToString("N"));
+                Directory.CreateDirectory(extractDir);
+                System.IO.Compression.ZipFile.ExtractToDirectory(zipPath, extractDir);
+
+                string[] jsonFiles = Directory.GetFiles(extractDir, "*.json");
+                if (jsonFiles.Length == 0)
+                {
+                    Directory.Delete(extractDir, true);
+                    return (false, "No JSON files found in the ZIP.");
+                }
+
+                foreach (string file in jsonFiles)
+                {
+                    string fileName = Path.GetFileName(file);
+                    string dest = Path.Combine(BasePath, fileName);
+                    File.Copy(file, dest, true);
+                }
+
+                Directory.Delete(extractDir, true);
+                return (true, $"Imported {jsonFiles.Length} file(s) successfully.");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Import failed: {ex.Message}");
+            }
+        }
+
         public static string GetDataPath()
         {
             return BasePath;
