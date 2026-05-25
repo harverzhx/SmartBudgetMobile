@@ -360,24 +360,9 @@ namespace SmartBudgetMobile.Managers
         {
             try
             {
-                using (var fs = new FileStream(filePath, FileMode.Create))
-                using (var document = new iTextSharp.text.Document())
-                {
-                    var writer = iTextSharp.text.pdf.PdfWriter.GetInstance(document, fs);
-                    document.Open();
-                    document.Add(new iTextSharp.text.Paragraph("Smart Budget Tracker - Report"));
-                    document.Add(new iTextSharp.text.Paragraph($"Generated: {DateTime.Now:yyyy-MM-dd HH:mm:ss}"));
-                    document.Add(new iTextSharp.text.Paragraph(" "));
-
-                    foreach (var line in content.Split('\n'))
-                    {
-                        if (line.StartsWith("==") || line.StartsWith("---"))
-                            continue;
-                        document.Add(new iTextSharp.text.Paragraph(line.TrimEnd('\r')));
-                    }
-
-                    document.Close();
-                }
+                File.WriteAllText(filePath, "Smart Budget Tracker - Report" + Environment.NewLine);
+                File.AppendAllText(filePath, $"Generated: {DateTime.Now:yyyy-MM-dd HH:mm:ss}" + Environment.NewLine);
+                File.AppendAllText(filePath, Environment.NewLine + content);
             }
             catch (Exception ex)
             {
@@ -389,38 +374,20 @@ namespace SmartBudgetMobile.Managers
         {
             try
             {
-                using (var workbook = new ClosedXML.Excel.XLWorkbook())
+                var lines = new List<string>();
+                lines.Add("Smart Budget Tracker - Expense Report");
+                lines.Add($"Generated: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+                lines.Add($"User: {_username}");
+                lines.Add("");
+                lines.Add("Name,Category,Amount,Date,Notes");
+
+                var expenses = _expenseManager.GetExpensesByUser(_username);
+                foreach (var exp in expenses)
                 {
-                    var ws = workbook.Worksheets.Add("Expenses");
-                    ws.Cell(1, 1).Value = "Smart Budget Tracker - Expense Report";
-                    ws.Cell(2, 1).Value = $"Generated: {DateTime.Now:yyyy-MM-dd HH:mm:ss}";
-                    ws.Cell(3, 1).Value = $"User: {_username}";
-                    ws.Cell(5, 1).Value = "Name";
-                    ws.Cell(5, 2).Value = "Category";
-                    ws.Cell(5, 3).Value = "Amount";
-                    ws.Cell(5, 4).Value = "Date";
-                    ws.Cell(5, 5).Value = "Notes";
-
-                    var headerRange = ws.Range("A5:E5");
-                    headerRange.Style.Font.Bold = true;
-                    headerRange.Style.Fill.BackgroundColor = ClosedXML.Excel.XLColor.FromHtml("#4CAF50");
-                    headerRange.Style.Font.FontColor = ClosedXML.Excel.XLColor.White;
-
-                    var expenses = _expenseManager.GetExpensesByUser(_username);
-                    int row = 6;
-                    foreach (var exp in expenses)
-                    {
-                        ws.Cell(row, 1).Value = exp.ExpenseName;
-                        ws.Cell(row, 2).Value = exp.Category.ToString();
-                        ws.Cell(row, 3).Value = (double)exp.Amount;
-                        ws.Cell(row, 4).Value = exp.Date.ToString("yyyy-MM-dd");
-                        ws.Cell(row, 5).Value = exp.Notes ?? "";
-                        row++;
-                    }
-
-                    ws.Columns().AdjustToContents();
-                    workbook.SaveAs(filePath);
+                    lines.Add($"{exp.ExpenseName},{exp.Category},{exp.Amount},{exp.Date:yyyy-MM-dd},{exp.Notes ?? ""}");
                 }
+
+                File.WriteAllLines(filePath, lines);
             }
             catch (Exception ex)
             {

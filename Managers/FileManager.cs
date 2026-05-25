@@ -205,6 +205,16 @@ namespace SmartBudgetMobile.Managers
             }
         }
 
+        public static void ExportToTxt(string filePath, string content)
+        {
+            File.WriteAllText(filePath, content);
+        }
+
+        public static void ExportToCsv(string filePath, string content)
+        {
+            File.WriteAllText(filePath, content);
+        }
+
         public static string GetDataPath()
         {
             return BasePath;
