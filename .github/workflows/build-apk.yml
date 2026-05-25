@@ -3,8 +3,6 @@ name: Build Android APK
 on:
   push:
     branches: [ "main" ]
-    paths:
-      - 'SmartBudgetMobile/**'
   workflow_dispatch:
 
 jobs:
@@ -23,10 +21,10 @@ jobs:
         run: dotnet workload install maui-android
 
       - name: Restore dependencies
-        run: dotnet restore SmartBudgetMobile/SmartBudgetMobile.csproj
+        run: dotnet restore
 
       - name: Build APK
-        run: dotnet publish SmartBudgetMobile/SmartBudgetMobile.csproj -f net10.0-android -c Release -o publish
+        run: dotnet publish -f net10.0-android -c Release -o publish
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
