@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartBudgetMobile.Pages.BillsPage"
+             Title="Bills"
+             BackgroundColor="#F0F2F5">
+    <ScrollView>
+        <VerticalStackLayout Padding="15" Spacing="10">
+            <Frame BackgroundColor="White" CornerRadius="10" Padding="15" HasShadow="True">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Bill Details" FontSize="16" FontAttributes="Bold" TextColor="#2C3E50" />
+                    <Entry x:Name="txtBillName" Placeholder="Bill name" BackgroundColor="#F9F9F9" />
+                    <Entry x:Name="txtAmount" Placeholder="Amount" Keyboard="Numeric" BackgroundColor="#F9F9F9" />
+                    <DatePicker x:Name="dateDueDate" MinimumDate="2020-01-01" MaximumDate="2030-12-31" />
+                    <Entry x:Name="txtNotes" Placeholder="Notes (optional)" BackgroundColor="#F9F9F9" />
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
+                        <Label Text="Recurring (monthly)" VerticalTextAlignment="Center" FontSize="13" TextColor="#2C3E50" />
+                        <Switch x:Name="switchRecurring" Grid.Column="1" OnColor="#E67E22" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="5">
+                        <Button x:Name="btnAdd" Text="Add" BackgroundColor="#2ECC71" TextColor="White" FontAttributes="Bold" HeightRequest="40" CornerRadius="8" Clicked="OnAddClicked" />
+                        <Button x:Name="btnUpdate" Text="Update" BackgroundColor="#3498DB" TextColor="White" FontAttributes="Bold" HeightRequest="40" CornerRadius="8" IsEnabled="False" Clicked="OnUpdateClicked" Grid.Column="1" />
+                        <Button x:Name="btnDelete" Text="Delete" BackgroundColor="#E74C3C" TextColor="White" FontAttributes="Bold" HeightRequest="40" CornerRadius="8" IsEnabled="False" Clicked="OnDeleteClicked" Grid.Column="2" />
+                        <Button Text="Reset" BackgroundColor="#95A5A6" TextColor="White" FontAttributes="Bold" HeightRequest="40" CornerRadius="8" Clicked="OnResetClicked" Grid.Column="3" />
+                    </Grid>
+                    <Button x:Name="btnMarkPaid" Text="Mark as Paid" BackgroundColor="#27AE60" TextColor="White" FontAttributes="Bold" HeightRequest="40" CornerRadius="8" IsEnabled="False" Clicked="OnMarkPaidClicked" />
+                </VerticalStackLayout>
+            </Frame>
+            <Label Text="Bills List" FontSize="16" FontAttributes="Bold" TextColor="#2C3E50" />
+            <CollectionView x:Name="billsList" SelectionMode="Single" SelectionChanged="OnBillSelected">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BackgroundColor="White" CornerRadius="8" Padding="12" Margin="0,3" HasShadow="True">
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                                <Label Text="{Binding BillName}" FontSize="15" FontAttributes="Bold" TextColor="{Binding NameColor}" />
+                                <Label Text="{Binding Amount, StringFormat='{0:C}'}" FontSize="15" FontAttributes="Bold" TextColor="#2C3E50" Grid.Column="1" />
+                                <Label Text="{Binding StatusDisplay}" FontSize="12" TextColor="{Binding StatusColor}" Grid.Row="1" />
+                                <Label Text="{Binding DueDate, StringFormat='Due: {0:MMM dd, yyyy}'}" FontSize="12" TextColor="#7F8C8D" Grid.Row="1" Grid.Column="1" />
+                                <Label Text="{Binding DaysLeftDisplay}" FontSize="11" TextColor="#95A5A6" Grid.Row="2" Grid.ColumnSpan="2" />
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <Label Text="No bills found" HorizontalTextAlignment="Center" TextColor="#95A5A6" Margin="0,20" />
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

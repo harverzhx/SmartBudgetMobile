@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartBudgetMobile.Pages.BudgetPage"
+             Title="Budget"
+             BackgroundColor="#F0F2F5">
+    <ScrollView>
+        <VerticalStackLayout Padding="15" Spacing="10">
+            <Frame BackgroundColor="White" CornerRadius="10" Padding="15" HasShadow="True">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Set Budget" FontSize="18" FontAttributes="Bold" TextColor="#2C3E50" />
+                    <Picker x:Name="pickerBudgetType" Title="Select budget type" BackgroundColor="#F9F9F9" SelectedIndexChanged="OnBudgetTypeChanged">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Daily</x:String>
+                                <x:String>Weekly</x:String>
+                                <x:String>Monthly</x:String>
+                                <x:String>Yearly</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                    <Entry x:Name="txtAmount" Placeholder="Budget amount" Keyboard="Numeric" BackgroundColor="#F9F9F9" />
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Frame BackgroundColor="#FFF3CD" CornerRadius="8" Padding="12" HasShadow="False">
+                            <VerticalStackLayout>
+                                <Label Text="Current Spent" FontSize="11" TextColor="#856404" />
+                                <Label x:Name="lblCurrentSpent" Text="₱0" FontSize="16" FontAttributes="Bold" TextColor="#856404" />
+                            </VerticalStackLayout>
+                        </Frame>
+                        <Frame BackgroundColor="#D4EDDA" CornerRadius="8" Padding="12" HasShadow="False" Grid.Column="1">
+                            <VerticalStackLayout>
+                                <Label Text="Remaining" FontSize="11" TextColor="#155724" />
+                                <Label x:Name="lblRemaining" Text="₱0" FontSize="16" FontAttributes="Bold" TextColor="#155724" />
+                            </VerticalStackLayout>
+                        </Frame>
+                    </Grid>
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button Text="Save Budget" BackgroundColor="#2ECC71" TextColor="White" FontAttributes="Bold" HeightRequest="45" CornerRadius="8" Clicked="OnSaveClicked" />
+                        <Button x:Name="btnReset" Text="Reset Budget" BackgroundColor="#E74C3C" TextColor="White" FontAttributes="Bold" HeightRequest="45" CornerRadius="8" Clicked="OnResetClicked" Grid.Column="1" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+            <Label Text="All Budgets" FontSize="16" FontAttributes="Bold" TextColor="#2C3E50" />
+            <CollectionView x:Name="budgetsList" SelectionMode="Single" SelectionChanged="OnBudgetSelected">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BackgroundColor="White" CornerRadius="8" Padding="12" Margin="0,3" HasShadow="True">
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                                <Label Text="{Binding BudgetType}" FontSize="15" FontAttributes="Bold" TextColor="#2C3E50" />
+                                <Label Text="{Binding Amount, StringFormat='{0:C}'}" FontSize="15" FontAttributes="Bold" TextColor="#2ECC71" Grid.Column="1" />
+                                <Label Text="{Binding Spent, StringFormat='Spent: {0:C}'}" FontSize="12" TextColor="#E74C3C" Grid.Row="1" />
+                                <Label Text="{Binding RemainingBalance, StringFormat='Remaining: {0:C}'}" FontSize="12" TextColor="#7F8C8D" Grid.Row="1" Grid.Column="1" />
+                                <ProgressBar Progress="{Binding UsagePercent}" ProgressColor="{Binding UsageColor}" Grid.Row="2" Grid.ColumnSpan="2" Margin="0,5,0,0" />
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <Label Text="No budgets set yet" HorizontalTextAlignment="Center" TextColor="#95A5A6" Margin="0,20" />
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

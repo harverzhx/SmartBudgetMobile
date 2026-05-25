@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SmartBudgetMobile.Pages.SavingsPage"
+             Title="Savings"
+             BackgroundColor="#F0F2F5">
+    <ScrollView>
+        <VerticalStackLayout Padding="15" Spacing="10">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <Frame BackgroundColor="#D4EDDA" CornerRadius="10" Padding="15" HasShadow="True">
+                    <VerticalStackLayout>
+                        <Label Text="Total Savings" FontSize="11" TextColor="#155724" />
+                        <Label x:Name="lblTotalSavings" Text="₱0" FontSize="22" FontAttributes="Bold" TextColor="#155724" />
+                    </VerticalStackLayout>
+                </Frame>
+                <Frame BackgroundColor="#CCE5FF" CornerRadius="10" Padding="15" HasShadow="True" Grid.Column="1">
+                    <VerticalStackLayout>
+                        <Label Text="Overall Progress" FontSize="11" TextColor="#004085" />
+                        <Label x:Name="lblProgress" Text="0%" FontSize="22" FontAttributes="Bold" TextColor="#004085" />
+                    </VerticalStackLayout>
+                </Frame>
+            </Grid>
+            <Frame BackgroundColor="White" CornerRadius="10" Padding="15" HasShadow="True">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Goal Details" FontSize="16" FontAttributes="Bold" TextColor="#2C3E50" />
+                    <Entry x:Name="txtGoalName" Placeholder="Goal name" BackgroundColor="#F9F9F9" />
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Entry x:Name="txtGoalAmount" Placeholder="Target amount" Keyboard="Numeric" BackgroundColor="#F9F9F9" />
+                        <Entry x:Name="txtCurrentAmount" Placeholder="Current amount" Keyboard="Numeric" BackgroundColor="#F9F9F9" Grid.Column="1" />
+                    </Grid>
+                    <DatePicker x:Name="dateTargetDate" MinimumDate="2020-01-01" MaximumDate="2030-12-31" />
+                    <Label Text="Add Funds" FontSize="14" FontAttributes="Bold" TextColor="#2C3E50" />
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                        <Entry x:Name="txtAddAmount" Placeholder="Amount to add" Keyboard="Numeric" BackgroundColor="#F9F9F9" />
+                        <Button x:Name="btnAddToGoal" Text="Add" BackgroundColor="#2ECC71" TextColor="White" FontAttributes="Bold" HeightRequest="40" CornerRadius="8" WidthRequest="80" IsEnabled="False" Clicked="OnAddToGoalClicked" Grid.Column="1" />
+                    </Grid>
+                    <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="5">
+                        <Button x:Name="btnAddGoal" Text="Add" BackgroundColor="#2ECC71" TextColor="White" FontAttributes="Bold" HeightRequest="40" CornerRadius="8" Clicked="OnAddGoalClicked" />
+                        <Button x:Name="btnUpdateGoal" Text="Update" BackgroundColor="#3498DB" TextColor="White" FontAttributes="Bold" HeightRequest="40" CornerRadius="8" IsEnabled="False" Clicked="OnUpdateGoalClicked" Grid.Column="1" />
+                        <Button x:Name="btnDeleteGoal" Text="Delete" BackgroundColor="#E74C3C" TextColor="White" FontAttributes="Bold" HeightRequest="40" CornerRadius="8" IsEnabled="False" Clicked="OnDeleteGoalClicked" Grid.Column="2" />
+                        <Button Text="Reset" BackgroundColor="#95A5A6" TextColor="White" FontAttributes="Bold" HeightRequest="40" CornerRadius="8" Clicked="OnResetClicked" Grid.Column="3" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+            <Label Text="Savings Goals" FontSize="16" FontAttributes="Bold" TextColor="#2C3E50" />
+            <CollectionView x:Name="goalsList" SelectionMode="Single" SelectionChanged="OnGoalSelected">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BackgroundColor="White" CornerRadius="8" Padding="12" Margin="0,3" HasShadow="True">
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto">
+                                <Label Text="{Binding GoalName}" FontSize="15" FontAttributes="Bold" TextColor="#2C3E50" />
+                                <Label Text="{Binding ProgressPercent, StringFormat='{0:F0}%'}" FontSize="15" FontAttributes="Bold" TextColor="#9B59B6" Grid.Column="1" />
+                                <Label Text="{Binding CurrentAmount, StringFormat='{0:C}'}" FontSize="13" TextColor="#2ECC71" Grid.Row="1" />
+                                <Label Text="{Binding GoalAmount, StringFormat='of {0:C}'}" FontSize="13" TextColor="#7F8C8D" Grid.Row="1" Grid.Column="1" />
+                                <ProgressBar Progress="{Binding ProgressDecimal}" ProgressColor="#9B59B6" Grid.Row="2" Grid.ColumnSpan="2" Margin="0,5,0,0" />
+                                <Label Text="{Binding StatusText}" FontSize="11" TextColor="{Binding StatusTextColor}" Grid.Row="3" Grid.ColumnSpan="2" />
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <Label Text="No savings goals yet" HorizontalTextAlignment="Center" TextColor="#95A5A6" Margin="0,20" />
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
