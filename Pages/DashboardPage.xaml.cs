@@ -95,7 +95,7 @@ public partial class DashboardPage : ContentPage
 	private async void OnSettingsClicked(object sender, EventArgs e)
 	{
 		string action = await DisplayActionSheet("Settings", "Cancel", null,
-			"Backup Data", "Share Data", "Reset All Data", "Logout");
+			"Backup Data", "Restore from Backup", "Share Data", "Reset All Data", "Logout");
 
 		switch (action)
 		{
@@ -104,6 +104,34 @@ public partial class DashboardPage : ContentPage
 				{
 					FileManager.CreateBackup();
 					await DisplayAlert("Success", "Backup created.", "OK");
+				}
+				catch (Exception ex)
+				{
+					await DisplayAlert("Error", ex.Message, "OK");
+				}
+				break;
+
+			case "Restore from Backup":
+				try
+				{
+					var backups = FileManager.GetAvailableBackups();
+					if (backups.Count == 0)
+					{
+						await DisplayAlert("No Backups", "No backups found.", "OK");
+						break;
+					}
+
+					string[] backupNames = backups.Select(b => Path.GetFileName(b)).ToArray();
+					string selected = await DisplayActionSheet("Select Backup", "Cancel", null, backupNames);
+					if (selected == null) break;
+
+					string selectedPath = backups[Array.IndexOf(backupNames, selected)];
+					FileManager.RestoreFromBackup(selectedPath);
+					_expenseManager.Reload();
+					_budgetManager.Reload();
+					await DisplayAlert("Success", "Backup restored. Please re-login.", "OK");
+					_authManager.Logout();
+					await Shell.Current.GoToAsync("//login");
 				}
 				catch (Exception ex)
 				{
