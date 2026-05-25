@@ -95,7 +95,7 @@ public partial class DashboardPage : ContentPage
 	private async void OnSettingsClicked(object sender, EventArgs e)
 	{
 		string action = await DisplayActionSheet("Settings", "Cancel", null,
-			"Backup Data", "Reset All Data", "Logout");
+			"Backup Data", "Share Data", "Reset All Data", "Logout");
 
 		switch (action)
 		{
@@ -104,6 +104,22 @@ public partial class DashboardPage : ContentPage
 				{
 					FileManager.CreateBackup();
 					await DisplayAlert("Success", "Backup created.", "OK");
+				}
+				catch (Exception ex)
+				{
+					await DisplayAlert("Error", ex.Message, "OK");
+				}
+				break;
+
+			case "Share Data":
+				try
+				{
+					string zipPath = FileManager.ExportBackupForSharing();
+					await Share.RequestAsync(new ShareFileRequest
+					{
+						Title = "SmartBudget Backup",
+						File = new ShareFile(zipPath)
+					});
 				}
 				catch (Exception ex)
 				{

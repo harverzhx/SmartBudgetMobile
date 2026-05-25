@@ -215,6 +215,33 @@ namespace SmartBudgetMobile.Managers
             File.WriteAllText(filePath, content);
         }
 
+        public static string ExportBackupForSharing()
+        {
+            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+            string exportDir = Path.Combine(FileSystem.CacheDirectory, "export");
+            if (Directory.Exists(exportDir))
+                Directory.Delete(exportDir, true);
+            Directory.CreateDirectory(exportDir);
+
+            foreach (string file in Directory.GetFiles(BasePath, "*.json"))
+            {
+                string dest = Path.Combine(exportDir, Path.GetFileName(file));
+                File.Copy(file, dest, true);
+            }
+
+            string readme = $"SmartBudget Backup - {DateTime.Now:yyyy-MM-dd HH:mm:ss}";
+            File.WriteAllText(Path.Combine(exportDir, "backup_info.txt"), readme);
+
+            string zipPath = Path.Combine(FileSystem.CacheDirectory, $"SmartBudget_Backup_{timestamp}.zip");
+            if (File.Exists(zipPath))
+                File.Delete(zipPath);
+
+            System.IO.Compression.ZipFile.CreateFromDirectory(exportDir, zipPath);
+            Directory.Delete(exportDir, true);
+
+            return zipPath;
+        }
+
         public static string GetDataPath()
         {
             return BasePath;
