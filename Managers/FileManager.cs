@@ -242,6 +242,30 @@ namespace SmartBudgetMobile.Managers
             return zipPath;
         }
 
+        public static string ExportToDownloads()
+        {
+            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+            string downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "..", "Download");
+            string zipPath = Path.Combine(downloadsPath, $"SmartBudget_Backup_{timestamp}.zip");
+
+            string exportDir = Path.Combine(FileSystem.CacheDirectory, "export_" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(exportDir);
+
+            foreach (string file in Directory.GetFiles(BasePath, "*.json"))
+            {
+                string dest = Path.Combine(exportDir, Path.GetFileName(file));
+                File.Copy(file, dest, true);
+            }
+
+            if (File.Exists(zipPath))
+                File.Delete(zipPath);
+
+            System.IO.Compression.ZipFile.CreateFromDirectory(exportDir, zipPath);
+            Directory.Delete(exportDir, true);
+
+            return zipPath;
+        }
+
         public static (bool Success, string Message) ImportFromZip(string zipPath)
         {
             try
