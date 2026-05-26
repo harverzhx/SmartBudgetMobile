@@ -180,7 +180,14 @@ public partial class DashboardPage : ContentPage
 					});
 					if (fileResult == null) break;
 
-					var (success, message) = FileManager.ImportFromZip(fileResult.FullPath);
+					string localPath = Path.Combine(FileSystem.CacheDirectory, "import_temp.zip");
+					using (var src = await fileResult.OpenReadAsync())
+					using (var dst = File.OpenWrite(localPath))
+					{
+						await src.CopyToAsync(dst);
+					}
+
+					var (success, message) = FileManager.ImportFromZip(localPath);
 					await DisplayAlert(success ? "Success" : "Error", message, "OK");
 
 					if (success)
@@ -194,6 +201,8 @@ public partial class DashboardPage : ContentPage
 							await Shell.Current.GoToAsync("//login");
 						}
 					}
+
+					if (File.Exists(localPath)) File.Delete(localPath);
 				}
 				catch (Exception ex)
 				{
