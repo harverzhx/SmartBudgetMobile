@@ -245,7 +245,13 @@ namespace SmartBudgetMobile.Managers
         public static string ExportToDownloads()
         {
             string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-            string downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "..", "Download");
+            string downloadsPath;
+#if ANDROID
+            downloadsPath = global::Android.OS.Environment.GetExternalStoragePublicDirectory(
+                global::Android.OS.Environment.DirectoryDownloads).AbsolutePath;
+#else
+            downloadsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+#endif
             string zipPath = Path.Combine(downloadsPath, $"SmartBudget_Backup_{timestamp}.zip");
 
             string exportDir = Path.Combine(FileSystem.CacheDirectory, "export_" + Guid.NewGuid().ToString("N"));
