@@ -170,6 +170,11 @@ public partial class DashboardPage : ContentPage
 			case "Import from ZIP":
 				try
 				{
+					bool proceed = await DisplayAlert("Warning",
+						"This will REPLACE all current data with the backup. Continue?", "Yes", "No");
+					if (!proceed) break;
+
+					FileManager.CreateBackup();
 					var fileResult = await FilePicker.Default.PickAsync(new PickOptions
 					{
 						PickerTitle = "Select SmartBudget backup ZIP",
@@ -194,11 +199,22 @@ public partial class DashboardPage : ContentPage
 					{
 						_expenseManager.Reload();
 						_budgetManager.Reload();
-						bool relogin = await DisplayAlert("Restore Complete", "Re-login to apply changes?", "Yes", "No");
-						if (relogin)
+						await DisplayAlert("Done", "Current data auto-backed up before import. Go to Settings > Restore from Backup to undo.", "OK");
+					}
+					else
+					{
+						bool restore = await DisplayAlert("Import Failed",
+							"Restore previous backup?", "Yes", "No");
+						if (restore)
 						{
-							_authManager.Logout();
-							await Shell.Current.GoToAsync("//login");
+							var backups = FileManager.GetAvailableBackups();
+							if (backups.Count > 0)
+							{
+								FileManager.RestoreFromBackup(backups[0]);
+								_expenseManager.Reload();
+								_budgetManager.Reload();
+								await DisplayAlert("Done", "Previous data restored.", "OK");
+							}
 						}
 					}
 

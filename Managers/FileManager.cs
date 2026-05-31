@@ -274,11 +274,20 @@ namespace SmartBudgetMobile.Managers
 
         public static (bool Success, string Message) ImportFromZip(string zipPath)
         {
+            string tempZip = null;
             try
             {
+                tempZip = Path.Combine(FileSystem.CacheDirectory, "import_temp_" + Guid.NewGuid().ToString("N") + ".zip");
+                using (var sourceStream = File.OpenRead(zipPath))
+                using (var destStream = File.Create(tempZip))
+                {
+                    sourceStream.CopyTo(destStream);
+                }
+
                 string extractDir = Path.Combine(FileSystem.CacheDirectory, "import_" + Guid.NewGuid().ToString("N"));
                 Directory.CreateDirectory(extractDir);
-                System.IO.Compression.ZipFile.ExtractToDirectory(zipPath, extractDir);
+                System.IO.Compression.ZipFile.ExtractToDirectory(tempZip, extractDir);
+                try { File.Delete(tempZip); } catch { }
 
                 string[] jsonFiles = Directory.GetFiles(extractDir, "*.json");
                 if (jsonFiles.Length == 0)
@@ -299,6 +308,7 @@ namespace SmartBudgetMobile.Managers
             }
             catch (Exception ex)
             {
+                try { if (tempZip != null) File.Delete(tempZip); } catch { }
                 return (false, $"Import failed: {ex.Message}");
             }
         }
